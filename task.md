@@ -1,0 +1,36 @@
+# Task List: e-Seba Production Refactoring
+
+- `[x]` **Phase 1: Foundation**
+  - `[x]` Create folder structure
+  - `[x]` Update `pyproject.toml` with SQLite and FastAPI dependencies
+  - `[x]` Configure `app/config.py` for settings management
+  - `[x]` Configure `app/database.py` with SQLAlchemy for SQLite
+  - `[x]` Write all models in `app/models/` matching the 24-table ER schema
+  - `[x]` Set up database migrations with Alembic and run them to generate tables
+- `[x]` **Phase 2: Simulators, Crypto & Seeds**
+  - `[x]` Create `app/simulators/aadhaar_gateway.py` with dummy citizen registry
+  - `[x]` Create `app/simulators/otp_provider.py` with console logging OTP verification
+  - `[x]` Create `app/simulators/dsc_verifier.py` for mock digital signature token lookup
+  - `[x]` Implement `app/services/crypto_service.py` for file hashing and signature validation
+  - `[x]` Write `app/seed/` scripts for catalog, offices, roles, officials, and citizens
+- `[x]` **Phase 3: Auth & Identity (algo_one)**
+  - `[x]` Implement `app/services/identity_service.py` (CAPTCHA, OTP flow, Aadhaar check, register)
+  - `[x]` Create schemas for auth in `app/schemas/auth.py` and citizen in `app/schemas/citizen.py`
+  - `[x]` Build router endpoints in `app/api/auth.py` and profile CRUD in `app/api/citizen.py`
+  - `[x]` Define FastAPI auth dependency (`get_current_citizen`) in `app/dependencies.py`
+- `[x]` **Phase 4: Applications & Documents (algo_two + file_locking)**
+  - `[x]` Set up schemas in `app/schemas/application.py`
+  - `[x]` Implement `app/services/application_service.py` for input/doc schema validation
+  - `[x]` Implement `app/services/ledger_service.py` (genesis block hash, ledger append)
+  - `[x]` Create routes `app/api/applications.py` and file upload endpoints in `app/api/documents.py`
+- `[x]` **Phase 5: Admin Workflows & Verification (verification_transaction + authorization)**
+  - `[x]` Create schemas `app/schemas/admin.py` and `app/schemas/verification.py`
+  - `[x]` Implement verification report logic in `app/services/ledger_service.py` and `app/services/certificate_service.py`
+  - `[x]` Build routes `app/api/admin.py`, `app/api/verification.py`, and `app/api/authorization.py`
+- `[x]` **Phase 6: Audit & Employment Exchange (public_audit + algo_three)**
+  - `[x]` Create `app/api/audit.py` for public blockchain traversal and integrity check
+  - `[x]` Create schemas and endpoints for Employment Exchange registration, renewal, mutation in `app/api/employment.py` and service level logic in `app/services/employment_service.py`
+- `[x]` **Phase 7: Testing & Final Polish**
+  - `[x]` Configure test fixtures in `tests/conftest.py`
+  - `[x]` Write tests for auth, applications, ledger chain, and verification
+  - `[x]` Modify `app/main.py` as app entry point and clean up old `main.py`
