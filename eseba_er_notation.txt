@@ -1,0 +1,400 @@
+title e-Seba Anti-Corruption Platform - Complete ER Diagram
+notation crows-foot
+
+// ============================================
+// CITIZEN IDENTITY DOMAIN
+// ============================================
+
+citizens [icon: user, color: blue] {
+  citizen_id string pk
+  aadhaar_hash string uk "SHA-256 hash representation"
+  full_name string "Immutable"
+  father_name string "Immutable"
+  date_of_birth date "Immutable"
+  gender string "Immutable"
+  religion string
+  caste_category string // "OBC", "SC", "ST", "GENERAL"
+  sub_caste string
+  phone_primary string "OTP-verified mobile"
+  phone_secondary string
+  email string
+  epic_number string "Voter ID EPIC"
+  marital_status string // "SINGLE", "MARRIED"
+  blood_group string
+  profile_photo_url string
+  is_active boolean
+  registered_at datetime
+}
+
+citizen_addresses [icon: google-maps, color: yellow] {
+  address_id string pk
+  citizen_id string fk
+  address_type string // "PERMANENT", "PRESENT"
+  house_no string
+  street_locality string
+  village_town string
+  post_office string
+  police_station string
+  circle string
+  sub_division string
+  district string
+  state string
+  pin_code string
+  area_type string // "URBAN", "RURAL"
+  is_primary boolean
+}
+
+citizen_education [icon: book] {
+  education_id string pk
+  citizen_id string fk
+  exam_passed string // "HSLC", "Class XII", "BA"
+  board_or_university string
+  institute_name string
+  subjects_list string
+  division_or_grade string
+  percentage_or_cgpa decimal
+  year_of_passing int
+  course_duration_years int
+  instruction_medium string
+  certificate_doc_url string
+  certificate_doc_hash bytes32
+  sort_order int
+}
+
+citizen_family_members [icon: users] {
+  family_member_id string pk
+  citizen_id string fk
+  relationship string // "FATHER", "MOTHER", "SPOUSE"
+  full_name string
+  occupation string
+  annual_income decimal
+  phone string
+  is_alive boolean
+}
+
+citizen_work_experience [icon: briefcase] {
+  experience_id string pk
+  citizen_id string fk
+  employer_name string
+  post_held string
+  nature_of_work text
+  experience_type string // "GOVERNMENT", "PRIVATE"
+  job_type string // "FULL_TIME", "PART_TIME"
+  pay_on_leaving decimal
+  from_date date
+  to_date date
+  experience_doc_url string
+  experience_doc_hash bytes32
+}
+
+citizen_languages [icon: globe] {
+  language_id string pk
+  citizen_id string fk
+  language_name string
+  can_read boolean
+  can_write boolean
+  can_speak boolean
+}
+
+citizen_physical_standards [icon: activity] {
+  physical_id string pk
+  citizen_id string fk
+  height_cm decimal
+  weight_kg decimal
+  chest_normal_cm decimal
+  chest_expanded_cm decimal
+  wears_glasses boolean
+  disability_status string // "NONE", "PARTIAL"
+  disability_type string
+  recorded_at timestamp
+}
+
+// ============================================
+// APPLICATION INGESTION DOMAIN
+// ============================================
+
+service_catalog [icon: tag, color: purple] {
+  service_id string pk
+  service_code string uk // "OBC_CERTIFICATE", "INCOME_CERTIFICATE"
+  service_name string
+  department string // "REVENUE", "EMPLOYMENT"
+  description string
+  required_fields_schema jsonb
+  required_documents_schema jsonb
+  max_file_size_kb int
+  fee_amount decimal
+  expected_processing_days int
+  is_active boolean
+}
+
+applications [icon: file-text, color: teal] {
+  application_id string pk "Custom format: MN-REV-YYYY-XXXXX"
+  citizen_id string fk
+  service_id string fk
+  processing_office_id string fk
+  current_status string // "DRAFT", "SUBMITTED", "FIELD_VERIFIED", "APPROVED"
+  form_data jsonb
+  purpose string
+  declaration_accepted boolean
+  rejection_reason string
+  return_reason string
+  priority_level int
+  submitted_at datetime
+  last_status_change_at datetime
+  expected_completion_date datetime
+  created_at datetime
+}
+
+application_documents [icon: paperclip] {
+  document_id string pk
+  application_id string fk
+  document_type string // "PassportPhoto", "Jamabandi"
+  document_label string
+  original_filename string
+  storage_url string
+  file_hash string uk "SHA-256"
+  file_size_bytes int
+  mime_type string
+  is_verified boolean
+  verified_by string fk
+  uploaded_at datetime
+}
+
+application_status_logs [icon: list] {
+  log_id string pk
+  application_id string fk
+  from_status string
+  to_status string
+  changed_by string fk
+  changed_by_role string
+  remarks string
+  metadata jsonb
+  changed_at datetime
+}
+
+application_fees [icon: money, color: green] {
+  fee_id string pk
+  application_id string fk
+  amount decimal
+  payment_method string // "UPI", "NET_BANKING"
+  transaction_reference string
+  payment_status string // "PENDING", "COMPLETED"
+  paid_at datetime
+}
+
+application_remarks [icon: message-square] {
+  remark_id string pk
+  application_id string fk
+  official_id string fk
+  remark_type string // "OBSERVATION", "QUERY"
+  remark_text text
+  is_internal boolean
+  requires_citizen_response boolean
+  citizen_response text
+  responded_at datetime
+  created_at datetime
+}
+
+application_assignments [icon: user-check] {
+  assignment_id string pk
+  application_id string fk
+  assigned_to string fk
+  assigned_by string fk
+  assignment_type string // "AUTO", "MANUAL"
+  assignment_status string
+  assigned_at datetime
+  completed_at datetime
+  deadline datetime
+}
+
+// ============================================
+// ADMINISTRATIVE DOMAIN
+// ============================================
+
+offices [icon: home, color: navy] {
+  office_id string pk
+  office_code string uk // "SDO-IW"
+  office_name string
+  office_type string // "SDO_OFFICE", "CIRCLE_OFFICE"
+  district string
+  sub_division string
+  full_address string
+  parent_office_id string fk
+  is_active boolean
+}
+
+roles [icon: shield, color: purple] {
+  role_id string pk
+  role_code string uk // "REVENUE_LAMBU", "SDO"
+  role_name string
+  department string
+  authority_level int
+  permissions jsonb
+}
+
+government_officials [icon: users, color: blue] {
+  official_id string pk
+  office_id string fk
+  role_id string fk
+  employee_id string uk
+  full_name string
+  designation string
+  phone string
+  email string
+  blockchain_wallet_address string uk "DSC Wallet Signature key"
+  dsc_serial_number string
+  is_active boolean
+  password_hash string
+}
+
+workflow_stages [icon: shuffle] {
+  stage_id string pk
+  service_id string fk
+  stage_order int
+  stage_code string
+  stage_name string
+  required_role string
+  sla_hours int
+  is_terminal boolean
+}
+
+// ============================================
+// INSPECTION & DECISION DOMAIN
+// ============================================
+
+verification_reports [icon: check-square, color: orange] {
+  report_id string pk
+  application_id string fk
+  verifier_id string fk "Lambu official ID"
+  verification_type string // "FIELD_VISIT", "DOCUMENT_CHECK"
+  verdict string // "VALID", "INVALID"
+  findings text
+  recommendation text
+  verification_date date
+  visit_location string
+  checklist_responses jsonb
+  documents_hash_at_verification bytes32
+  hash_match boolean
+  photo_evidence_url string
+}
+
+issued_certificates [icon: award, color: gold] {
+  certificate_id string pk
+  application_id string fk
+  citizen_id string fk
+  issued_by string fk "SDO official ID"
+  certificate_number string uk
+  certificate_type string // "OBC", "INCOME"
+  certificate_hash bytes32 "PDF check content"
+  qr_code_hash bytes32
+  qr_code_image_url string
+  certificate_pdf_url string
+  valid_from date
+  valid_until date
+  is_revoked boolean
+  revocation_reason string
+  issued_at datetime
+}
+
+employment_registrations [icon: clipboard, color: slate] {
+  registration_id string pk "Format: MN-EMP-YYYY-XXXXX"
+  citizen_id string fk
+  processing_office_id string fk "Employment Exchange office"
+  current_state string
+  seniority_date date
+  lifespan_expiry_date date
+  last_renewal_date date
+  renewal_count int
+  physical_standards_snapshot jsonb
+  created_at datetime
+}
+
+// ============================================
+// LEDGER & AUDIT DOMAIN
+// ============================================
+
+blockchain_ledger_entries [icon: database, color: red] {
+  block_hash bytes32 pk "SHA-256 checksum"
+  application_id string fk
+  previous_block_hash bytes32 "Chained sequence hash"
+  aggregate_data_hash bytes32
+  status_at_block string
+  signee_address string
+  signee_role string
+  action_description text
+  block_timestamp datetime
+  block_sequence int
+}
+
+audit_logs [icon: eye] {
+  log_id string pk
+  entity_type string // "CITIZEN", "APPLICATION"
+  entity_id string
+  action string
+  actor_id string
+  actor_type string
+  actor_ip_address string
+  user_agent string
+  old_values jsonb
+  new_values jsonb
+  performed_at datetime
+}
+
+notifications [icon: bell] {
+  notification_id string pk
+  recipient_id string fk
+  recipient_type string // "CITIZEN", "OFFICIAL"
+  application_id string
+  channel string // "SMS", "EMAIL"
+  title string
+  message_body text
+  notification_type string
+  is_read boolean
+  is_sent boolean
+  sent_at datetime
+  created_at datetime
+}
+
+// ============================================
+// RELATIONSHIPS
+// ============================================
+
+// Citizen Profile Domain
+citizen_addresses.citizen_id > citizens.citizen_id
+citizen_education.citizen_id > citizens.citizen_id
+citizen_family_members.citizen_id > citizens.citizen_id
+citizen_work_experience.citizen_id > citizens.citizen_id
+citizen_languages.citizen_id > citizens.citizen_id
+citizen_physical_standards.citizen_id - citizens.citizen_id
+employment_registrations.citizen_id - citizens.citizen_id
+
+// Application Ingestion
+applications.citizen_id > citizens.citizen_id
+applications.service_id > service_catalog.service_id
+applications.processing_office_id > offices.office_id
+
+application_documents.application_id > applications.application_id
+application_status_logs.application_id > applications.application_id
+application_fees.application_id - applications.application_id
+application_remarks.application_id > applications.application_id
+application_assignments.application_id > applications.application_id
+
+// Admin Hierarchy & Officials
+offices.parent_office_id > offices.office_id
+workflow_stages.service_id > service_catalog.service_id
+government_officials.office_id > offices.office_id
+government_officials.role_id > roles.role_id
+
+application_assignments.assigned_to > government_officials.official_id
+application_remarks.official_id > government_officials.official_id
+
+// Inspections & Issuance
+verification_reports.application_id - applications.application_id
+verification_reports.verifier_id > government_officials.official_id
+
+issued_certificates.application_id - applications.application_id
+issued_certificates.citizen_id > citizens.citizen_id
+issued_certificates.issued_by > government_officials.official_id
+
+// Ledger & Blockchain Logs
+blockchain_ledger_entries.application_id > applications.application_id
