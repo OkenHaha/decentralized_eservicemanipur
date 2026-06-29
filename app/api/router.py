@@ -8,6 +8,7 @@ from app.api.verification import router as verification_router
 from app.api.authorization import router as authorization_router
 from app.api.audit import router as audit_router
 from app.api.employment import router as employment_router
+from app.api.admin import router as admin_router
 
 api_router = APIRouter()
 
@@ -19,3 +20,4 @@ api_router.include_router(verification_router)
 api_router.include_router(authorization_router)
 api_router.include_router(audit_router)
 api_router.include_router(employment_router)
+api_router.include_router(admin_router)

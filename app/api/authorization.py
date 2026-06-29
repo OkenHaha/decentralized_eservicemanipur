@@ -6,11 +6,29 @@ from app.database import get_db
 from app.dependencies import get_current_official
 from app.models.admin import GovernmentOfficial, Role
 from app.models.application import Application
+from app.models.certificate import IssuedCertificate
 from app.schemas.verification import AuthorizationSubmit, CertificateResponse
 from app.services.ledger_service import append_approval_block, get_latest_block, LedgerError
 from app.services.certificate_service import mint_digital_certificate
 
 router = APIRouter(prefix="/authorize", tags=["Final Authorization"])
+
+@router.get("/{application_id}/certificate", response_model=CertificateResponse)
+async def get_issued_certificate(
+    application_id: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Retrieve the issued certificate details for a given application.
+    """
+    stmt = select(IssuedCertificate).where(IssuedCertificate.application_id == application_id)
+    res = await db.execute(stmt)
+    cert = res.scalar_one_or_none()
+    
+    if not cert:
+        raise HTTPException(status_code=404, detail="Certificate not found for this application.")
+        
+    return cert
 
 @router.post("/{application_id}", response_model=CertificateResponse)
 async def authorize_application(
