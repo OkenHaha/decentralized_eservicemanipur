@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
-    description="A hybrid database-ledger replica implementation of Manipur's anti-corruption e-Seba portal.",
+    description="A hybrid database-ledger replica implementation of Manipur's anti-corruption e-Services Manipur portal.",
     version="1.0.0",
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan
@@ -57,6 +57,6 @@ app.include_router(api_router, prefix=settings.API_V1_STR)
 def read_root():
     return {
         "status": "ONLINE",
-        "message": "Welcome to e-Seba Anti-Corruption Platform API",
+        "message": "Welcome to e-Services Manipur Anti-Corruption Platform API",
         "docs_url": "/docs"
     }

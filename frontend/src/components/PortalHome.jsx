@@ -68,7 +68,7 @@ function PortalHome({ setView, token, addToast }) {
           <span style={{ color: 'var(--color-primary)' }}>e-service Manipur</span> Replica
         </h1>
         <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '800px', margin: '0 auto 32px', lineHeight: 1.6 }}>
-          A secure governance framework implementing Manipur's e-Seba certificate issuance protocol. Complete with a cryptographic, hash-chained database ledger protecting against document tampering, unauthorized edits, and backdated approvals.
+          A secure governance framework implementing Manipur's e-Services Manipur certificate issuance protocol. Complete with a cryptographic, hash-chained database ledger protecting against document tampering, unauthorized edits, and backdated approvals.
         </p>
 
         <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>

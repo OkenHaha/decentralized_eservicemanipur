@@ -4,7 +4,7 @@ import PortalHome from './components/PortalHome';
 import CitizenPortal from './components/CitizenPortal';
 import OfficialPortal from './components/OfficialPortal';
 
-export const API_BASE = 'http://localhost:8000/api/v1';
+export const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8001/api/v1';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('eseba_token') || '');
@@ -145,7 +145,7 @@ function App() {
             <Shield size={24} color="#ffffff" />
           </div>
           <div>
-            <h2 style={{ fontSize: '1.25rem', lineHeight: 1.1 }}>e-Seba replica</h2>
+            <h2 style={{ fontSize: '1.25rem', lineHeight: 1.1 }}>e-Services Manipur</h2>
             <span style={{ fontSize: '0.75rem', color: 'var(--color-gold)', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
               Anti-Tamper Ledgers
             </span>

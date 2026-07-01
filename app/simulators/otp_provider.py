@@ -6,7 +6,7 @@ def dispatch_sms_gateway(target: str, payload: str) -> bool:
     """
     Simulates sending an OTP SMS. In development, it prints/logs the OTP to the console.
     """
-    print(f"\n[MOCK SMS GATEWAY] >>> Dispatched to {target}: Your e-Seba OTP is: {payload}. Valid for 10 minutes.\n")
+    print(f"\n[MOCK SMS GATEWAY] >>> Dispatched to {target}: Your e-Services Manipur OTP is: {payload}. Valid for 10 minutes.\n")
     logger.info(f"OTP [{payload}] sent to {target}")
     return True
 

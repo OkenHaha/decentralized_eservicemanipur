@@ -3,7 +3,7 @@ from pathlib import Path
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Anti-Corruption e-Seba Replica"
+    PROJECT_NAME: str = "Anti-Corruption e-Services Manipur"
     API_V1_STR: str = "/api/v1"
     
     # SQLite Database configuration
@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     
     # Development Flag
     DEV_MODE: bool = True
+
+    # External Blockchain Node URL
+    BLOCKCHAIN_NODE_URL: str = os.getenv("BLOCKCHAIN_NODE_URL", "http://127.0.0.1:8000")
 
     class Config:
         case_sensitive = True
